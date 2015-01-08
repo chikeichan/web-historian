@@ -23,7 +23,8 @@ var actions = {
     if(req.url === '/'){
       url = __dirname + '/public/index.html';
       //TEST =============================
-      console.log(archive.isUrlInList('www.facebook.com'))
+
+      console.log('test');
       //==========================
 
     }
@@ -53,7 +54,6 @@ var actions = {
 }
 
 exports.handleRequest = function (req, res) {
-  console.log(req.method)
   var action = actions[req.method];
   if(action){
     action(req,res);

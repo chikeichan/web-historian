@@ -32,27 +32,49 @@ exports.readListOfUrls = function(cb){
   })
 };
 
-exports.isUrlInList = function(url){
-  return this.readListOfUrls(function(urls){
-    var result = false;
-    for(var i = 0; i<urls.length; i++){
-      if( urls[i] === url ){
-        console.log('hello', urls[i], url);
-        result = true;
+exports.isUrlInList = function(url,cb,error){
+  var path = this.paths.list;
+  this.readListOfUrls(function(urls){
+    var found = false;
+    urls.forEach(function(data){
+      if(data === url){
+        cb(data);
+        found = true;
       }
+    })
+    if(!found){
+      error(url);
     }
-    return result;
-  });
-
+  })
 };
 
 exports.addUrlToList = function(url){
   var path = this.paths.list;
-  fs.writeFile(path,url+"\n");
+  var error = function(){
+    fs.readFile(path,'utf-8',function(err,data){
+      fs.writeFile(path,data+url+'\n');
+    })
+  };
+
+  this.isUrlInList(url, function(d){
+    console.log(d)
+  }, error);
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(url){
+  var path = this.paths.archivedSites;
+  var files = fs.readdirSync(path);
+  for(var i=0 ; i<files.length; i++){
+    if(files[i] === url){
+      return true;
+    }
+  }
+  return false;
 };
 
 exports.downloadUrls = function(){
+  this.readListOfUrls(function(urls){
+    //download source
+
+  })
 };
