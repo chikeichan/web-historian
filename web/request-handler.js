@@ -3,10 +3,18 @@ var archive = require('../helpers/archive-helpers');
 var fs = require('fs');
 // require more modules/folders here!
 
-var sendResponse = function(res,data,statusCode, header){
+var header = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "access-control-allow-headers": "content-type, accept",
+  "access-control-max-age": 10, // Seconds.
+  "Content-type": "text/html"
+};
+
+var sendResponse = function(res,data,statusCode){
   statusCode = statusCode;
   res.writeHead(statusCode, header);
-  res.end(JSON.stringify(data));
+  res.end(data);
 }
 
 var actions = {
@@ -14,22 +22,38 @@ var actions = {
     var url = archive.paths.archivedSites+req.url;
     if(req.url === '/'){
       url = __dirname + '/public/index.html';
+      //TEST =============================
+      console.log(archive.isUrlInList('www.facebook.com'))
+      //==========================
+
     }
     fs.readFile(url,'utf-8', function(err, data){
       if(err){
-        sendResponse(res,'404',404,{});
+        sendResponse(res,'404',404);
       } else {
-        sendResponse(res, data ,200, {'context-type': 'text/html'});
+        sendResponse(res, data ,200);
       }
     });
   },
   'POST':function(req,res){
-    archive.addUrlToList(req._postData.url);
-    sendResponse(res,undefined,302,{'context-type': 'text/html'});
+    req.on('data',function(body){
+      var url = body.toString().slice(4);
+      archive.addUrlToList(url);
+    })
+
+    var loading = __dirname + '/public/loading.html';
+    fs.readFile(loading,'utf-8', function(err, data){
+      if(err){
+        sendResponse(res,'404',404);
+      } else {
+        sendResponse(res, data ,200);
+      }
+    });
   }
 }
 
 exports.handleRequest = function (req, res) {
+  console.log(req.method)
   var action = actions[req.method];
   if(action){
     action(req,res);

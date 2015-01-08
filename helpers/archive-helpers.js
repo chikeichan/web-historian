@@ -32,7 +32,18 @@ exports.readListOfUrls = function(cb){
   })
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(url){
+  return this.readListOfUrls(function(urls){
+    var result = false;
+    for(var i = 0; i<urls.length; i++){
+      if( urls[i] === url ){
+        console.log('hello', urls[i], url);
+        result = true;
+      }
+    }
+    return result;
+  });
+
 };
 
 exports.addUrlToList = function(url){
