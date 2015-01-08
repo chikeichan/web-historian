@@ -22,11 +22,7 @@ var actions = {
     var url = archive.paths.archivedSites+req.url;
     if(req.url === '/'){
       url = __dirname + '/public/index.html';
-      //TEST =============================
-      archive.downloadUrls();
-
-      //==========================
-
+      console.log(archive.paths.archivedSites)
     }
     fs.readFile(url,'utf-8', function(err, data){
       if(err){

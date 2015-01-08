@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
-var fetch = require('workers/htmlfetcher.js').fetch;
+var fetch = require('../workers/htmlfetcher.js').fetch;
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.

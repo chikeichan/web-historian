@@ -10,12 +10,9 @@ exports.fetch = function(url){
   // fetch url
   // save content to file
   var path = archive.paths.archivedSites+'/'+url;
-
-
   request('http://'+url, function(error, response, body){
     if(!error){
       fs.writeFile(path,body);
     }
   });
-
 }
